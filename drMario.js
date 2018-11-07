@@ -14,12 +14,12 @@ var leftPillYAxis;
 var rightPillXAxis;
 var rightPillYAxis;
 
-var pill;
-var pillCount;
-var sizeX;
-var sizeY;
+//var pill;
+//var pillCount;
+var width;
+var height;
 var myVar;
-var fallSpeed = 3;
+var fallSpeed = 2;
 var moveLeftOrRightSpeed = 30;
 var framePerSecond = 100;
 var second 
@@ -32,73 +32,90 @@ var pillBColors = [];
 var pillsBX = [];
 var pillsBY = [];
 
-let floor = [
-        [0, 0, 30],
-        [1, 30, 30],
-        [2, 60, 30],
-        [3, 90, 30],
-        [4, 120, 30],
-        [5, 150, 30],
-        [6, 180, 30],
-        [7, 210, 30],
-        [8, 240, 30],
-        [9, 270, 30],
-        [10, 300, 30],
-        [11, 330, 30],
-        [12, 360, 30],
-        [13, 390, 30]
-];
+var pills = [];
+
+var pill = {
+    AWidth: 30,
+    BWidth: 30,
+    AHeight: 30,
+    BHeight: 30,
+    AColor: "",
+    BColor: "",
+    AX: 0,
+    AY: 0,
+    BX: 0,
+    BY: 0,
+    Velocity: 1,
+    Count: []
+}
 
 window.onload = function() {
         console.log("Start Program");
         canvas = document.getElementById('gameCanvas');
         canvasContext = canvas.getContext('2d');
         
-        startPositions();
-        setSize();
-        createPill();
-        pillCount = 0;
+        var pillPositions = startPositions(pill, canvas.width/2, 0);
+        pill.BX = pillPositions[0];
+        pill.BY = pillPositions[1];
+        var pillDimensions = setSize(pill, 30, 30);
+        pill.AWidth = pillDimensions[0];
+        pill.AHeight = pillDimensions[1];
+        pill.BWidth = pillDimensions[2];
+        pill.BHeight = pillDimensions[3];
+        pill = createPill(pill);
+        pill.Count = 0;
         
-        myVar = setInterval(newPill, 10);            
+        myVar = setInterval(newPill(pill), 10);            
 }
 
-function startPositions(){
-    originalPositionX = canvas.width/2;
-    originalPositionY = 0;
+
+function startPositions(pillRefCopy, x, y){
+    pillRefCopy.BX = x;
+    pillRefCopy.BY = y;
+    return [pillRefCopy.BX, pillRefCopy.BY];
 }
 
-function setSize(){
-    sizeX = 30;
-    sizeY = 30;
+function setSize(pillRefCopy, _width, _height){
+    pillRefCopy.AWidth = _width;
+    pillRefCopy.AHeight = _height;
+    pillRefCopy.BWidth = _width;
+    pillRefCopy.BHeight = _height;
+    return [pillRefCopy.AWidth, pillRefCopy.AHeight, pillRefCopy.BWidth, pillRefCopy.BHeight];
 }
 
-function setAxis(){
-        leftPillXAxis = originalPositionX - sizeX;
-        leftPillYAxis = originalPositionY;
-        rightPillXAxis = originalPositionX;
-        rightPillYAxis = originalPositionY;
+function setAxis(pillRefCopy){
+        pillRefCopy.AX = pillRefCopy.BX - pillRefCopy.AWidth;
+        pillRefCopy.AY = pillRefCopy.BY;
+        pillRefCopy.BX = pillRefCopy.BX;
+        pillRefCopy.BY = pillRefCopy.BY;
+        return [pillRefCopy.AX, pillRefCopy.AY, pillRefCopy.BX, pillRefCopy.BY];
 }
 
-function createPill(){
-        setAxis();
-        randomPillColor1 = pillColors[Math.floor(Math.random() * pillColors.length)];
-        randomPillColor2 = pillColors[Math.floor(Math.random() * pillColors.length)];
-        SetPillColor(randomPillColor1, randomPillColor2);   
-}
-
-function dropDown(){
-    fallSpeed = 10;
-    rightPillYAxis = canvas.height - 40;
-    leftPillYAxis = canvas.height - 40;
-    fallSpeed = 0;
+function createPill(pill){
+        var pillAxis = setAxis(pill);
+        pill.AX = pillAxis[0];
+        pill.AY = pillAxis[1];
+        pill.BX = pillAxis[2];
+        pill.BY = pillAxis[3];
+        pill.AColor = pillColors[Math.floor(Math.random() * pillColors.length)];
+        pill.BColor = pillColors[Math.floor(Math.random() * pillColors.length)];
+        //SetPillColor(pill);
+        
+        return pill;
 }
 
 function pillReset(){
-        startPositions();
-        setAxis();
-        var newRandomPillColor1 = pillColors[Math.floor(Math.random() * pillColors.length)];
-        var newRandomPillColor2 = pillColors[Math.floor(Math.random() * pillColors.length)];        
-        SetPillColor(newRandomPillColor1, newRandomPillColor2);
+        var pillPositions = startPositions(pill, canvas.width/2, 0);
+        pill.BX = pillPositions[0];
+        pill.BY = pillPositions[1];
+        var pillAxis = setAxis(pill);
+        pill.AX = pillAxis[0];
+        pill.AY = pillAxis[1];
+        pill.BX = pillAxis[2];
+        pill.BY = pillAXis[3];
+        pill.AColor = pillColors[Math.floor(Math.random() * pillColors.length)];
+        pill.BColor = pillColors[Math.floor(Math.random() * pillColors.length)];      
+        //SetPillColor(newRandomPillColor1, newRandomPillColor2);
 }
 
 var pillAColors = [];
@@ -122,22 +139,22 @@ function endGame(){
     
 }
 
-function moveDown(){
+function moveDown(pillRefCopy){
         var floorX = 0;
         for (var i = 0; i < pillsAX.length; i++)
         {
-            if (pillsAX[i] == leftPillXAxis && pillsAY[i] == leftPillYAxis + 30 || pillsBX[i] == rightPillXAxis && pillsBY[i] == rightPillYAxis + 30 
-                || leftPillXAxis == pillsBX[i] && leftPillYAxis + 30 == pillsBY[i] || rightPillXAxis == pillsAX[i] && rightPillYAxis + 30 == pillsAY[i])
+            if (pillsAX[i] == pillRefCopy.AX && pillsAY[i] == pillRefCopy.AY + 30 || pillsBX[i] == pillRefCopy.BX && pillsBY[i] == pillRefCopy.BY + 30 
+                || pillRefCopy.AX == pillsBX[i] && pillRefCopy.AY + 30 == pillsBY[i] || pillRefCopy.BX == pillsAX[i] && pillRefCopy.BY + 30 == pillsAY[i])
             {
-                pillAColors[pillCount] = leftPillColor;
-                pillsAX[pillCount] = leftPillXAxis;
-                pillsAY[pillCount] = leftPillYAxis;
-                pillBColors[pillCount] = rightPillColor;
-                pillsBX[pillCount] = rightPillXAxis;
-                pillsBY[pillCount] = rightPillYAxis;
+                pillAColors[pillCount] = pillRefCopy.AColor;
+                pillsAX[pillCount] = pillRefCopy.AX;
+                pillsAY[pillCount] = pillRefCopy.AY;
+                pillBColors[pillCount] = pillRefCopy.BColor;
+                pillsBX[pillCount] = pillRefCopy.BX;
+                pillsBY[pillCount] = pillRefCopy.BY;
                 pillCount++;
 
-                if (leftPillYAxis == 0 || rightPillYAxis == 0)
+                if (pillRefCopy.AY == -30 || pillRefCopy.BY == -30)
                 {
                     clearInterval(myVar);
                     alert('game over')
@@ -145,32 +162,32 @@ function moveDown(){
                 else{
                     pillReset();
                     stop = true; 
-                    return stop;    
+                    return pill;    
                 }                  
             }
             floorX = floorX + 30;
         }
 
 
-        if (stop == false && leftPillYAxis < canvas.height - 30 || rightPillYAxis < canvas.height - 30)
+        if (stop == false && pillRefCopy.AY < canvas.height - 30 || pillRefCopy.BY < canvas.height - 30)
         {
             //fallSpeed = 1;
-            leftPillYAxis = leftPillYAxis + fallSpeed; 
-            rightPillYAxis = rightPillYAxis + fallSpeed;
+            pillRefCopy.AY = pillRefCopy.AY + fallSpeed; 
+            pillRefCopy.BY = pillRefCopy.BY + fallSpeed;
         }
         else
         {   
             //
-            pillAColors[pillCount] = leftPillColor;
-            pillsAX[pillCount] = leftPillXAxis;
-            pillsAY[pillCount] = leftPillYAxis;
+            pillAColors[pillCount] = pillRefCopy.AColor;
+            pillsAX[pillCount] = pillRefCopy.AX;
+            pillsAY[pillCount] = pillRefCopy.AY;
             pillBColors[pillCount] = rightPillColor;
-            pillsBX[pillCount] = rightPillXAxis;
-            pillsBY[pillCount] = rightPillYAxis;
+            pillsBX[pillCount] = pillRefCopy.BX;
+            pillsBY[pillCount] = pillRefCopy.BY;
             pillCount++;
             pillReset(); 
             stop = false;
-            return stop;           
+            return pill;           
         }
     
 }
@@ -191,7 +208,7 @@ function moveRight(){
     {
         rightPillXAxis += moveLeftOrRightSpeed;
         leftPillXAxis += moveLeftOrRightSpeed;
-        console.log(originalPositionX);
+        console.log(startPositionX);
     }
 }
 
@@ -218,19 +235,19 @@ function drawCanvas(){
     canvasContext.fillStyle = 'CornflowerBlue';
     canvasContext.fillRect(0,0, canvas.width, canvas.height);
     var i;
-    for (i = 0; i < pillCount; i++)
+    for (i = 0; i < pillsAX[i]; i++)
     {      
         canvasContext.fillStyle = pillAColors[i];        
-        canvasContext.fillRect(pillsAX[i], pillsAY[i], sizeX, sizeY);
+        canvasContext.fillRect(pillsAX[i], pillsAY[i], width, height);
         
         canvasContext.fillStyle = pillBColors[i];
-        canvasContext.fillRect(pillsBX[i], pillsBY[i], sizeX, sizeY);
+        canvasContext.fillRect(pillsBX[i], pillsBY[i], width, height);
     }
 }
 
-function newPill(){  
-    moveDown();   
-    drawGame();
+function newPill(pillRefCopy){  
+    moveDown(pillRefCopy);   
+    drawGame(pillRefCopy);
 }
 
 function rotatePillClockwise()
@@ -277,45 +294,42 @@ function rotatePillClockwise()
     
 
 
-function drawPill(){     
-        colorPill(leftPillColor, rightPillColor, leftPillXAxis, rightPillXAxis, leftPillYAxis, rightPillYAxis, sizeX, sizeY);  
+function drawPill(pillRefCopy){     
+        colorPill(pillRefCopy);  
 }
 
-function colorStaticPill(leftHalfPillColor, rightHalfPillColor, leftStartX, rightStartX, leftStartY, rightStartY, pillWidth, pillHeigth)
+// function colorStaticPill(leftHalfPillColor, rightHalfPillColor, leftStartX, rightStartX, leftStartY, rightStartY, pillWidth, pillHeigth)
+// {
+//         var staticA_PillColor = leftHalfPillColor;
+//         var staticB_PillColor = rightHalfPillColor;
+//         var staticAX = leftStartX;
+//         var staticAY = leftStartY;
+//         var staticBX = rightStartX;
+//         var staticBY = rightStartY;
+
+//         canvasContext.fillStyle = staticA_PillColor;        
+//         canvasContext.fillRect(staticAX, staticAY, pillWidth, pillHeigth);      
+
+//         canvasContext.fillStyle = staticB_PillColor;
+//         canvasContext.fillRect(staticBX, staticBY, pillWidth, pillHeigth);      
+// }
+
+// function SetPillColor(left, right){
+//     leftPillColor = left;
+//     rightPillColor = right;
+// }
+
+function colorPill(pillRefCopy)
 {
-        var staticA_PillColor = leftHalfPillColor;
-        var staticB_PillColor = rightHalfPillColor;
-        var staticAX = leftStartX;
-        var staticAY = leftStartY;
-        var staticBX = rightStartX;
-        var staticBY = rightStartY;
-
-        canvasContext.fillStyle = staticA_PillColor;        
-        canvasContext.fillRect(staticAX, staticAY, pillWidth, pillHeigth);      
-
-        canvasContext.fillStyle = staticB_PillColor;
-        canvasContext.fillRect(staticBX, staticBY, pillWidth, pillHeigth);      
+        canvasContext.fillStyle = pillRefCopy.AColor;
+        canvasContext.fillRect(pillRefCopy.AX, pillRefCopy.AY, pillRefCopy.AWidth, pillRefCopy.AHeight);
+            
+        canvasContext.fillStyle = pillRefCopy.BColor;            
+        canvasContext.fillRect(pillRefCopy.BX, pillRefCopy.BY, pillRefCopy.BWidth, pillRefCopy.BHeight);      
 }
 
-function SetPillColor(left, right){
-    leftPillColor = left;
-    rightPillColor = right;
-}
-
-function colorPill(leftHalfPillColor, rightHalfPillColor, leftStartX, rightStartX, leftStartY, rightStartY, pillWidth, pillHeigth)
-{
-        canvasContext.fillStyle = leftHalfPillColor;
-            leftPillColor = leftHalfPillColor;       
-        canvasContext.fillRect(leftStartX, leftStartY, pillWidth, pillHeigth);
-        
-
-        canvasContext.fillStyle = rightHalfPillColor;
-            rightPillColor = rightHalfPillColor
-        canvasContext.fillRect(rightStartX, rightStartY, pillWidth, pillHeigth);      
-}
-
-function drawGame(){        
+function drawGame(pillRefCopy){        
         drawCanvas();
-        drawPill();
+        drawPill(pillRefCopy);
         endGame();
 }
