@@ -9,21 +9,17 @@ var randomPillColor2;
 var leftPillColor;
 var rightPillColor;
 
-var leftPillXAxis;
-var leftPillYAxis;
-var rightPillXAxis;
-var rightPillYAxis;
+
 
 //var pill;
 //var pillCount;
 var width;
 var height;
 var myVar;
-var fallSpeed = 2;
+var fallSpeed = 1.5;
 var moveLeftOrRightSpeed = 30;
 var framePerSecond = 100;
-var second 
-var position = 1;
+var position = "0";
 
 var pillAColors = [];
 var pillsAX = [];
@@ -66,7 +62,9 @@ window.onload = function() {
         createPill(pill);
         pill.Count = 0;
         
-        myVar = setInterval(newPill, 10);            
+        //var gameLoop = newPill(pill);
+
+        myVar = setInterval(newPill, 100, pill);            
 }
 
 
@@ -113,7 +111,7 @@ function pillReset(){
         pill.AX = pillAxis[0];
         pill.AY = pillAxis[1];
         pill.BX = pillAxis[2];
-        pill.BY = pillAXis[3];
+        pill.BY = pillAxis[3];
         pill.AColor = pillColors[Math.floor(Math.random() * pillColors.length)];
         pill.BColor = pillColors[Math.floor(Math.random() * pillColors.length)];      
         //SetPillColor(newRandomPillColor1, newRandomPillColor2);
@@ -142,7 +140,7 @@ function endGame(){
 
 function moveDown(pill){
         var floorX = 0;
-        for (var i = 0; i < pill.Count; i++)
+        for (var i = 0; i <= pill.Count; i++)
         {
             if (pillsAX[i] == pill.AX && pillsAY[i] == pill.AY + 30 || pillsBX[i] == pill.BX && pillsBY[i] == pill.BY + 30 
                 || pill.AX == pillsBX[i] && pill.AY + 30 == pillsBY[i] || pill.BX == pillsAX[i] && pill.BY + 30 == pillsAY[i])
@@ -155,7 +153,7 @@ function moveDown(pill){
                 pillsBY[pill.Count] = pill.BY;
                 pill.Count++;
 
-                if (pill.AY == -30 || pill.BY == -30)
+                if (pill.AY == 0 || pill.BY == 0)
                 {
                     clearInterval(myVar);
                     alert('game over')
@@ -182,7 +180,7 @@ function moveDown(pill){
             pillAColors[pill.Count] = pill.AColor;
             pillsAX[pill.Count] = pill.AX;
             pillsAY[pill.Count] = pill.AY;
-            pillBColors[pill.Count] = rightPillColor;
+            pillBColors[pill.Count] = pill.BColor;
             pillsBX[pill.Count] = pill.BX;
             pillsBY[pill.Count] = pill.BY;
             pill.Count++;
@@ -196,20 +194,20 @@ function moveDown(pill){
 
 
 function moveLeft(){
-    if (rightPillXAxis > 35)
+    if (pill.AX > 0)
     {
-        rightPillXAxis -= moveLeftOrRightSpeed;
-        leftPillXAxis -= moveLeftOrRightSpeed;
-        console.log(rightPillXAxis);
+        pill.AX -= moveLeftOrRightSpeed;
+        pill.BX -= moveLeftOrRightSpeed;
+
     }
 }
 
 function moveRight(){
-    if (rightPillXAxis < canvas.width - 45)
+    if (pill.AX < 360)
     {
-        rightPillXAxis += moveLeftOrRightSpeed;
-        leftPillXAxis += moveLeftOrRightSpeed;
-        console.log(startPositionX);
+        console.log(pill.AX);
+        pill.AX += moveLeftOrRightSpeed;
+        pill.BX += moveLeftOrRightSpeed;
     }
 }
 
@@ -226,71 +224,71 @@ function moveSlower(){
     }
 }
 
-function rotatePill180(){
-    var newRightPillColor = leftPillColor;
-    var newLeftPillColor = rightPillColor;
-    SetPillColor(newLeftPillColor, newRightPillColor);
-}
-
-function drawCanvas(){
+function drawCanvas(pill){
     canvasContext.fillStyle = 'CornflowerBlue';
     canvasContext.fillRect(0,0, canvas.width, canvas.height);
-    var i;
-    for (i = 0; i < pillsAX[i]; i++)
+    
+    for (var i = 0; i <= pill.Count; i++)
     {      
         canvasContext.fillStyle = pillAColors[i];        
-        canvasContext.fillRect(pillsAX[i], pillsAY[i], width, height);
+        canvasContext.fillRect(pillsAX[i], pillsAY[i], pill.AWidth, pill.AHeight);
         
         canvasContext.fillStyle = pillBColors[i];
-        canvasContext.fillRect(pillsBX[i], pillsBY[i], width, height);
+        canvasContext.fillRect(pillsBX[i], pillsBY[i], pill.BWidth, pill.BHeight);
     }
 }
 
-function newPill(){  
+function newPill(pill){  
     moveDown(pill);   
     drawGame(pill);
 }
 
 function rotatePillClockwise()
 {    
-
-    var priorRightPillXAxis = rightPillXAxis;
-    var priorRightPillYAxis = rightPillYAxis;
-    var priorLeftPillXAxis = leftPillXAxis;
-    var priorLeftPillYAxis = leftPillYAxis;
+    var previousAX = pill.AX;
+    var previousAY = pill.AY;
+    var previousBX = pill.BX;
+    var previousBY = pill.BY;
+    
     switch (position)
-{
-    case 1:
-        leftPillYAxis = priorLeftPillYAxis - 30;
-        leftPillXAxis = priorLeftPillXAxis;
-        rightPillYAxis = priorRightPillYAxis;
-        rightPillXAxis = priorLeftPillXAxis;
-        position = 2;
+{   
+    case "0":
+        pill.AY = previousAY - 30;
+        pill.AX = previousAX;
+        pill.BY = previousBY;
+        pill.BX = previousAX;
+        
+        position = "90";
         break;
-    case 2:
-        leftPillYAxis = priorLeftPillYAxis;
-        leftPillXAxis = priorLeftPillXAxis + 30;
-        rightPillYAxis = priorLeftPillYAxis;
-        rightPillXAxis = priorRightPillXAxis;
-        position = 3;
-        break;
-    case 3:
-        leftPillYAxis = priorLeftPillYAxis + 30;
-        leftPillXAxis = priorLeftPillXAxis;
-        rightPillYAxis = priorRightPillYAxis;
-        rightPillXAxis = priorRightPillXAxis + 30;
+    case "90":
+        pill.AY = previousAY;
+        pill.AX = previousAX + 30;
+        pill.BY = previousAY;
+        pill.BX = previousBX;
+        position = "180";
 
-        position = 4;
         break;
-    case 4:
-        leftPillYAxis = priorLeftPillYAxis;
-        leftPillXAxis = priorLeftPillXAxis - 30;
-        rightPillYAxis = priorLeftPillYAxis;
-        rightPillXAxis = priorLeftPillXAxis;
-        position = 1;
+    case "180":
+        pill.AY = previousAY + 30;
+        pill.AX = previousAX;
+        pill.BY = previousBY;
+        pill.BX = previousBX + 30;
+
+
+        position = "270";
+        break;
+    case "270":
+        pill.AY = previousAY;
+        pill.AX = previousAX - 30;
+        pill.BY = previousAY;
+        pill.BX = previousAX;
+
+        position = "0";
         break;
 
     }
+    console.log(position);
+
 }
     
 
@@ -322,6 +320,8 @@ function drawPill(pill){
 
 function colorPill(pill)
 {
+    //rotatePillClockwise();// for debugging, remove 
+
         canvasContext.fillStyle = pill.AColor;
         canvasContext.fillRect(pill.AX, pill.AY, pill.AWidth, pill.AHeight);
             
@@ -330,7 +330,7 @@ function colorPill(pill)
 }
 
 function drawGame(pill){        
-        drawCanvas();
+        drawCanvas(pill);
         drawPill(pill);
         endGame();
 }
