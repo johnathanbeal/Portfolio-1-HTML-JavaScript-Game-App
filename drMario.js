@@ -62,10 +62,11 @@ window.onload = function() {
         pill.AHeight = pillDimensions[1];
         pill.BWidth = pillDimensions[2];
         pill.BHeight = pillDimensions[3];
-        pill = createPill(pill);
+        //pill = 
+        createPill(pill);
         pill.Count = 0;
         
-        myVar = setInterval(newPill(pill), 10);            
+        myVar = setInterval(newPill, 10);            
 }
 
 
@@ -101,7 +102,7 @@ function createPill(pill){
         pill.BColor = pillColors[Math.floor(Math.random() * pillColors.length)];
         //SetPillColor(pill);
         
-        return pill;
+        //return pill;
 }
 
 function pillReset(){
@@ -129,7 +130,7 @@ var stop;
 
 function endGame(){
 
-    for (var i = 0; i < pillsAY.length; i++)
+    for (var i = 0; i < pill.Count; i++)
     {
         if(pillsAY[i] <= 0 && pillsAY[i] <= 30 || pillsBY[i] <= 0 && pillsBY[i] <= 30);
         {
@@ -139,22 +140,22 @@ function endGame(){
     
 }
 
-function moveDown(pillRefCopy){
+function moveDown(pill){
         var floorX = 0;
-        for (var i = 0; i < pillsAX.length; i++)
+        for (var i = 0; i < pill.Count; i++)
         {
-            if (pillsAX[i] == pillRefCopy.AX && pillsAY[i] == pillRefCopy.AY + 30 || pillsBX[i] == pillRefCopy.BX && pillsBY[i] == pillRefCopy.BY + 30 
-                || pillRefCopy.AX == pillsBX[i] && pillRefCopy.AY + 30 == pillsBY[i] || pillRefCopy.BX == pillsAX[i] && pillRefCopy.BY + 30 == pillsAY[i])
+            if (pillsAX[i] == pill.AX && pillsAY[i] == pill.AY + 30 || pillsBX[i] == pill.BX && pillsBY[i] == pill.BY + 30 
+                || pill.AX == pillsBX[i] && pill.AY + 30 == pillsBY[i] || pill.BX == pillsAX[i] && pill.BY + 30 == pillsAY[i])
             {
-                pillAColors[pillCount] = pillRefCopy.AColor;
-                pillsAX[pillCount] = pillRefCopy.AX;
-                pillsAY[pillCount] = pillRefCopy.AY;
-                pillBColors[pillCount] = pillRefCopy.BColor;
-                pillsBX[pillCount] = pillRefCopy.BX;
-                pillsBY[pillCount] = pillRefCopy.BY;
-                pillCount++;
+                pillAColors[pill.Count] = pill.AColor;
+                pillsAX[pill.Count] = pill.AX;
+                pillsAY[pill.Count] = pill.AY;
+                pillBColors[pill.Count] = pill.BColor;
+                pillsBX[pill.Count] = pill.BX;
+                pillsBY[pill.Count] = pill.BY;
+                pill.Count++;
 
-                if (pillRefCopy.AY == -30 || pillRefCopy.BY == -30)
+                if (pill.AY == -30 || pill.BY == -30)
                 {
                     clearInterval(myVar);
                     alert('game over')
@@ -165,26 +166,26 @@ function moveDown(pillRefCopy){
                     return pill;    
                 }                  
             }
-            floorX = floorX + 30;
+            //floorX = floorX + 30;
         }
 
 
-        if (stop == false && pillRefCopy.AY < canvas.height - 30 || pillRefCopy.BY < canvas.height - 30)
+        if (stop == false && pill.AY < canvas.height - 30 || pill.BY < canvas.height - 30)
         {
             //fallSpeed = 1;
-            pillRefCopy.AY = pillRefCopy.AY + fallSpeed; 
-            pillRefCopy.BY = pillRefCopy.BY + fallSpeed;
+            pill.AY = pill.AY + fallSpeed; 
+            pill.BY = pill.BY + fallSpeed;
         }
         else
         {   
             //
-            pillAColors[pillCount] = pillRefCopy.AColor;
-            pillsAX[pillCount] = pillRefCopy.AX;
-            pillsAY[pillCount] = pillRefCopy.AY;
-            pillBColors[pillCount] = rightPillColor;
-            pillsBX[pillCount] = pillRefCopy.BX;
-            pillsBY[pillCount] = pillRefCopy.BY;
-            pillCount++;
+            pillAColors[pill.Count] = pill.AColor;
+            pillsAX[pill.Count] = pill.AX;
+            pillsAY[pill.Count] = pill.AY;
+            pillBColors[pill.Count] = rightPillColor;
+            pillsBX[pill.Count] = pill.BX;
+            pillsBY[pill.Count] = pill.BY;
+            pill.Count++;
             pillReset(); 
             stop = false;
             return pill;           
@@ -245,9 +246,9 @@ function drawCanvas(){
     }
 }
 
-function newPill(pillRefCopy){  
-    moveDown(pillRefCopy);   
-    drawGame(pillRefCopy);
+function newPill(){  
+    moveDown(pill);   
+    drawGame(pill);
 }
 
 function rotatePillClockwise()
@@ -294,8 +295,8 @@ function rotatePillClockwise()
     
 
 
-function drawPill(pillRefCopy){     
-        colorPill(pillRefCopy);  
+function drawPill(pill){     
+        colorPill(pill);  
 }
 
 // function colorStaticPill(leftHalfPillColor, rightHalfPillColor, leftStartX, rightStartX, leftStartY, rightStartY, pillWidth, pillHeigth)
@@ -319,17 +320,17 @@ function drawPill(pillRefCopy){
 //     rightPillColor = right;
 // }
 
-function colorPill(pillRefCopy)
+function colorPill(pill)
 {
-        canvasContext.fillStyle = pillRefCopy.AColor;
-        canvasContext.fillRect(pillRefCopy.AX, pillRefCopy.AY, pillRefCopy.AWidth, pillRefCopy.AHeight);
+        canvasContext.fillStyle = pill.AColor;
+        canvasContext.fillRect(pill.AX, pill.AY, pill.AWidth, pill.AHeight);
             
-        canvasContext.fillStyle = pillRefCopy.BColor;            
-        canvasContext.fillRect(pillRefCopy.BX, pillRefCopy.BY, pillRefCopy.BWidth, pillRefCopy.BHeight);      
+        canvasContext.fillStyle = pill.BColor;            
+        canvasContext.fillRect(pill.BX, pill.BY, pill.BWidth, pill.BHeight);      
 }
 
-function drawGame(pillRefCopy){        
+function drawGame(pill){        
         drawCanvas();
-        drawPill(pillRefCopy);
+        drawPill(pill);
         endGame();
 }
