@@ -102,6 +102,7 @@ function pillReset(){
         pill.BY = pillPositions[1];
         var pillAxis = setAxis(pill);
         var pillWithColor = SetPillColor(pillAxis);
+        position = "0";
         return pillWithColor;
         // pill.AX = pillAxis[0];
         // pill.AY = pillAxis[1];
@@ -248,7 +249,7 @@ function rotatePillClockwise()
     switch (position)
 {   
     case "0":
-        pill.AY = previousAY - 30;
+        pill.AY = previousBY - 30;
         pill.AX = previousAX;
         pill.BY = previousBY;
         pill.BX = previousAX;
