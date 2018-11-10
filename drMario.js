@@ -124,13 +124,13 @@ var pillsBY = [];
 
 function endGame(){
 
-    for (var i = 0; i < pill.Count; i++)
-    {
-        if(pillsAY[i] <= 0 && pillsAY[i] <= 30 || pillsBY[i] <= 0 && pillsBY[i] <= 30);
-        {
-            //clearInterval(myVar);
-        }
-    }
+    // for (var i = 0; i < pill.Count; i++)
+    // {
+    //     if(pillsAY[i] <= 0 && pillsAY[i] <= 30 || pillsBY[i] <= 0 && pillsBY[i] <= 30);
+    //     {
+    //         clearInterval(myVar);
+    //     }
+    // }
     
 }
 
@@ -237,6 +237,7 @@ function drawCanvas(pill){
 function newPill(startNewPill){  
     moveDown(startNewPill);   
     drawGame(startNewPill);
+    validateGame();
 }
 
 function rotatePillClockwise()
@@ -303,22 +304,6 @@ function drawPill(pill){
         colorPill(pill);  
 }
 
-// function colorStaticPill(leftHalfPillColor, rightHalfPillColor, leftStartX, rightStartX, leftStartY, rightStartY, pillWidth, pillHeigth)
-// {
-//         var staticA_PillColor = leftHalfPillColor;
-//         var staticB_PillColor = rightHalfPillColor;
-//         var staticAX = leftStartX;
-//         var staticAY = leftStartY;
-//         var staticBX = rightStartX;
-//         var staticBY = rightStartY;
-
-//         canvasContext.fillStyle = staticA_PillColor;        
-//         canvasContext.fillRect(staticAX, staticAY, pillWidth, pillHeigth);      
-
-//         canvasContext.fillStyle = staticB_PillColor;
-//         canvasContext.fillRect(staticBX, staticBY, pillWidth, pillHeigth);      
-// }
-
 function SetPillColor(pillToColor){
     pillToColor.AColor = pillColors[Math.floor(Math.random() * pillColors.length)];
     pillToColor.BColor = pillColors[Math.floor(Math.random() * pillColors.length)]; 
@@ -337,15 +322,32 @@ function colorPill(pill)
         console.log(pill.AX, pill.BX);
 }
 
+function rgbToHex(r, g, b) {
+    if (r > 255 || g > 255 || b > 255)
+        throw "Invalid color component";
+    return ((r << 16) | (g << 8) | b).toString(16);
+}
+
+var imageDataArray = [];
+var imageData = [,];
+
 function validateGame()
 {
-    var imgData = canvasContext.getImageData(0, 0, 30, 30);
+    for (var x = 0; x < 420; x += 30)
+    {
+        for (var y = 0; y < 840; y += 30)
+        {
+            imgData[x][y] = canvasContext.getImageData(x, y, 30, 30);
+            var hex = "#" + ("000000" + rgbToHex(imgData[0], imgData[1], imgData[2])).slice(-6);
+            imageDataArray.push(imgData);
+        }
+    }
 
 }
 
 function drawGame(pill){        
         drawCanvas(pill);
         drawPill(pill);
-        validateGame();
+        
         endGame();
 }
