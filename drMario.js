@@ -329,7 +329,7 @@ function rgbToHex(r, g, b) {
 }
 
 var imageDataArray = [];
-var imageData = [,];
+var imageData = [[]];
 
 function validateGame()
 {
@@ -337,9 +337,7 @@ function validateGame()
     {
         for (var y = 0; y < 840; y += 30)
         {
-            imgData[x][y] = canvasContext.getImageData(x, y, 30, 30);
-            var hex = "#" + ("000000" + rgbToHex(imgData[0], imgData[1], imgData[2])).slice(-6);
-            imageDataArray.push(imgData);
+            imageData[[x,y]] = canvasContext.getImageData(x, y, 30, 30);
         }
     }
 
