@@ -1,12 +1,5 @@
-var canvas;//refactor functionally
-var canvasContext;//refactor functionally
-var pillColors = ['purple', 'yellow', 'black'];
-var width;
-var height;
-var myVar;//refactor functionally
-var moveLeftOrRightSpeed = 30;//rename
-var framePerSecond = 100;//refactor functionally
-var position = "0";//refactor functionally
+var position = "0";
+
 var pillAColors = [];//refactor functionally
 var pillsAX = [];//refactor functionally
 var pillsAY = [];//refactor functionally
@@ -30,6 +23,7 @@ var pill = {
 }
 
 window.onload = function() {
+    var framePerSecond = 100;
     console.log("Start Program");
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
@@ -43,7 +37,7 @@ window.onload = function() {
     pill.BHeight = pillDimensions[3];
     var firstPill = createPill(pill);
     firstPill.Count = 0;
-    myVar = setInterval(newPill, framePerSecond, firstPill);            
+    setInterval(newPill, framePerSecond, firstPill);            
 }
 
 function newPill(startNewPill){  
@@ -65,7 +59,6 @@ function moveDown(movePillDown){
             movePillDown.Count++;
 
             if (movePillDown.AY == 0 || movePillDown.BY == 0) {
-                clearInterval(myVar);
                 alert('game over')
             }
             else {
@@ -100,16 +93,19 @@ function drawGame(pill){
 }
 
 function drawCanvas(pill){
-    canvasContext.fillStyle = 'CornflowerBlue';
-    canvasContext.fillRect(0,0, canvas.width, canvas.height);
+    var cCanvas = document.getElementById('gameCanvas');
+    var cCanvasContext = canvas.getContext('2d');
+    
+    cCanvasContext.fillStyle = 'CornflowerBlue';
+    cCanvasContext.fillRect(0,0, canvas.width, canvas.height);
     
     for (var i = 0; i <= pill.Count; i++)
     {      
-        canvasContext.fillStyle = pillAColors[i];        
-        canvasContext.fillRect(pillsAX[i], pillsAY[i], pill.AWidth, pill.AHeight);
+        cCanvasContext.fillStyle = pillAColors[i];        
+        cCanvasContext.fillRect(pillsAX[i], pillsAY[i], pill.AWidth, pill.AHeight);
         
-        canvasContext.fillStyle = pillBColors[i];
-        canvasContext.fillRect(pillsBX[i], pillsBY[i], pill.BWidth, pill.BHeight);
+        cCanvasContext.fillStyle = pillBColors[i];
+        cCanvasContext.fillRect(pillsBX[i], pillsBY[i], pill.BWidth, pill.BHeight);
     }
 }
 
@@ -145,17 +141,18 @@ function createPill(createAPill){
     return pillColorSet;
 }
 
-function SetPillColor(pillToColor){
+function SetPillColor(pillToColor){   
+    var pillColors = ['purple', 'yellow', 'black'];
     pillToColor.AColor = pillColors[Math.floor(Math.random() * pillColors.length)];
     pillToColor.BColor = pillColors[Math.floor(Math.random() * pillColors.length)]; 
     return pillToColor; 
 }
 
-function pillReset(){
-    var pillPositions = startPositions(pill, canvas.width / 2, 0);
-    pill.BX = pillPositions[0];
-    pill.BY = pillPositions[1];
-    var pillAxis = setAxis(pill);
+function pillReset(pillToReset){
+    var pillPositions = startPositions((pillToReset, canvas.width / 2, 0));
+    pillPositions.BX = pillPositions[0];
+    pillPositions.BY = pillPositions[1];
+    var pillAxis = setAxis(pillPositions);
     var pillWithColor = SetPillColor(pillAxis);
     position = "0";
     return pillWithColor;
@@ -164,8 +161,8 @@ function pillReset(){
 function moveLeft(){
     if (pill.AX > 0)
     {
-        pill.AX -= moveLeftOrRightSpeed;
-        pill.BX -= moveLeftOrRightSpeed;
+        pill.AX -= 30;
+        pill.BX -= 30;
     }
 }
 
@@ -173,8 +170,8 @@ function moveRight(){
     if (pill.BX <= 360 && pill.AX <= 360)
     {
         console.log(pill.AX);
-        pill.AX += moveLeftOrRightSpeed;
-        pill.BX += moveLeftOrRightSpeed;
+        pill.AX += 30;
+        pill.BX += 30;
     }
 }
 
@@ -246,11 +243,14 @@ function rotatePillClockwise()
 
 function colorPill(pill)
 {
-    canvasContext.fillStyle = pill.AColor;
-    canvasContext.fillRect(pill.AX, pill.AY, pill.AWidth, pill.AHeight);
+    var pCanvas = document.getElementById('gameCanvas');
+    var pCanvasContext = canvas.getContext('2d');
 
-    canvasContext.fillStyle = pill.BColor;
-    canvasContext.fillRect(pill.BX, pill.BY, pill.BWidth, pill.BHeight);
+    pCanvasContext.fillStyle = pill.AColor;
+    pCanvasContext.fillRect(pill.AX, pill.AY, pill.AWidth, pill.AHeight);
+
+    pCanvasContext.fillStyle = pill.BColor;
+    pCanvasContext.fillRect(pill.BX, pill.BY, pill.BWidth, pill.BHeight);
     console.log(pill.AX, pill.BX);
 }
 
