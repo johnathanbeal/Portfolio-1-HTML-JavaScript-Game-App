@@ -117,7 +117,7 @@ function startPositions(pillRefCopy, x1, y1, x2, y2){
      pillRefCopy.AX = x1;
      pillRefCopy.AY = y1;
      pillRefCopy.BX = x2;
-     pillRefCopy.BY = x2;
+     pillRefCopy.BY = y2;
      return pillRefCopy;
 }
 
@@ -161,7 +161,7 @@ function pillReset(pillToReset){
     return pillWithColor;
 }
 
-function moveLeft(){
+function moveLeft(pill = [Pills.length - 1]){
     if (pill.AX > 0)
     {
         pill.AX -= 30;
@@ -169,7 +169,7 @@ function moveLeft(){
     }
 }
 
-function moveRight(){
+function moveRight(pill = [Pills.length - 1]){
     if (pill.BX <= 360 && pill.AX <= 360)
     {
         console.log(pill.AX);
@@ -178,14 +178,14 @@ function moveRight(){
     }
 }
 
-function moveFaster(){
+function moveFaster(pill = [Pills.length - 1]){
     if(pill.Velocity < 10)
     {
         pill.Velocity += 3;
     }
 }
 
-function moveSlower(){
+function moveSlower(pill = [Pills.length - 1]){
     if(pill.Velocity > 1){
     pill.Velocity -= 3;
     }
