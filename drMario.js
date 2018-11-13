@@ -26,14 +26,12 @@ function Pill(A_Width, A_Height, A_Color, A_X, A_Y, B_Width, B_Height, B_Color, 
 window.onload = function() {
     var framePerSecond = 100;
     console.log("Start Program");
-    canvas = document.getElementById('gameCanvas');
-    canvasContext = canvas.getContext('2d');
-    var pill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 5 );
-    Pills.push(pill);
-    var pillPositions = startPositions(pill, canvas.width / 2, 0);
-    pill.BX = pillPositions[0];
-    pill.BY = pillPositions[1];
-    var pillDimensions = setSize(pill, 30, 30);
+    var canvas = document.getElementById('gameCanvas');
+    var canvasContext = canvas.getContext('2d');
+    var pill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 15 );
+    var pillWithSetAxis = setAxis(pill)
+    var pillPositions = startPositions(pill, 180, 0, 210, 0);
+    var pillDimensions = setSize(pillPositions, 30, 30);
     pill.AWidth = pillDimensions[0];
     pill.AHeight = pillDimensions[1];
     pill.BWidth = pillDimensions[2];
@@ -44,7 +42,7 @@ window.onload = function() {
 }
 
 function newPill(startNewPill){  
-    moveDown(startNewPill);   
+    var usedPill = moveDown(startNewPill);   
     drawGame(startNewPill);
 }
 
@@ -67,12 +65,13 @@ function moveDown(movePillDown){
             else {
                 pillReset(movePillDown);
                 stop = true;
+                Pills.push(pill);
                 return movePillDown;
             }
         }
     }
 
-    if (stop == false && movePillDown.AY < canvas.height - 30 || movePillDown.BY < canvas.height - 30) {
+    if (stop == false && movePillDown.AY < 810 || movePillDown.BY < 810) {
         movePillDown.AY = movePillDown.AY + movePillDown.Velocity;
         movePillDown.BY = movePillDown.BY + movePillDown.Velocity;
     }
@@ -86,21 +85,22 @@ function moveDown(movePillDown){
         movePillDown.Count++;
         var resetPill = pillReset(movePillDown);
         stop = false;
+        
         return resetPill;
     }
 }
 
 function drawGame(pill){        
     drawCanvas(pill);
-    drawPill(pill);       
+    colorPill(pill);       
 }
 
 function drawCanvas(pill){
     var cCanvas = document.getElementById('gameCanvas');
-    var cCanvasContext = canvas.getContext('2d');
+    var cCanvasContext = cCanvas.getContext('2d');
     
     cCanvasContext.fillStyle = 'CornflowerBlue';
-    cCanvasContext.fillRect(0,0, canvas.width, canvas.height);
+    cCanvasContext.fillRect(0,0, cCanvas.width, cCanvas.height);
     
     for (var i = 0; i <= Pills.length; i++)
     {      
@@ -112,14 +112,12 @@ function drawCanvas(pill){
     }
 }
 
-function drawPill(pill){     
-    colorPill(pill);  
-}
-
-function startPositions(pillRefCopy, x, y){
-    pillRefCopy.BX = x;
-    pillRefCopy.BY = y;
-    return [pillRefCopy.BX, pillRefCopy.BY];//refactor OOP
+function startPositions(pillRefCopy, x1, y1, x2, y2){
+     pillRefCopy.AX = x1;
+     pillRefCopy.AY = y1;
+     pillRefCopy.BX = x2;
+     pillRefCopy.BY = x2;
+     return pillRefCopy;
 }
 
 function setSize(pillRefCopy, _width, _height){
@@ -152,13 +150,12 @@ function SetPillColor(pillToColor){
 }
 
 function pillReset(pillToReset){
-    var x = canvas.width / 2;
+    var x = 180;
     var y = 0;
-    var pillPositions = startPositions(pillToReset, x, y);
-    pillPositions.BX = pillPositions[0];
-    pillPositions.BY = pillPositions[1];
-    var pillAxis = setAxis(pillPositions);
-    var pillWithColor = SetPillColor(pillAxis);
+    var z = 210;
+    var zz = 0;
+    var pillPositions = startPositions(pillToReset, x, y, z, zz);
+    var pillWithColor = createPill(pillPositions);
     position = "0";
     return pillWithColor;
 }
@@ -249,7 +246,7 @@ function rotatePillClockwise()
 function colorPill(pill)
 {
     var pCanvas = document.getElementById('gameCanvas');
-    var pCanvasContext = canvas.getContext('2d');
+    var pCanvasContext = pCanvas.getContext('2d');
 
     pCanvasContext.fillStyle = pill.AColor;
     pCanvasContext.fillRect(pill.AX, pill.AY, pill.AWidth, pill.AHeight);
