@@ -1,4 +1,5 @@
 var position = "0";
+var Pills = [];
 
 var pillAColors = [];//refactor functionally
 var pillsAX = [];//refactor functionally
@@ -7,19 +8,19 @@ var pillBColors = [];//refactor functionally
 var pillsBX = [];//refactor functionally
 var pillsBY = [];//refactor functionally
 
-var pill = {
-    AWidth: 30,
-    BWidth: 30,
-    AHeight: 30,
-    BHeight: 30,
-    AColor: "White",
-    BColor: "White",
-    AX: 0,//set start x, y
-    AY: 0,//set start x, y
-    BX: 0,//set start x, y
-    BY: 0,//set start x, y
-    Velocity: 5,
-    Count: []
+function Pill(A_Width, A_Height, A_Color, A_X, A_Y, B_Width, B_Height, B_Color, B_X, B_Y, velocity)
+{
+    this.AWidth = A_Width;
+    this.BWidth = B_Width;
+    this.AHeight = A_Height;
+    this.BHeight = B_Height;
+    this.AColor = A_Color,
+    this.BColor = B_Color,
+    this.AX = A_X,
+    this.AY = A_Y,
+    this.BX = B_X,
+    this.BY = B_Y,
+    this.Velocity = velocity
 }
 
 window.onload = function() {
@@ -27,6 +28,8 @@ window.onload = function() {
     console.log("Start Program");
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
+    var pill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 5 );
+    Pills.push(pill);
     var pillPositions = startPositions(pill, canvas.width / 2, 0);
     pill.BX = pillPositions[0];
     pill.BY = pillPositions[1];
@@ -99,7 +102,7 @@ function drawCanvas(pill){
     cCanvasContext.fillStyle = 'CornflowerBlue';
     cCanvasContext.fillRect(0,0, canvas.width, canvas.height);
     
-    for (var i = 0; i <= pill.Count; i++)
+    for (var i = 0; i <= Pills.length; i++)
     {      
         cCanvasContext.fillStyle = pillAColors[i];        
         cCanvasContext.fillRect(pillsAX[i], pillsAY[i], pill.AWidth, pill.AHeight);
@@ -128,7 +131,7 @@ function setSize(pillRefCopy, _width, _height){
 }
 
 function setAxis(pillRefCopy){
-    pillRefCopy.AX = pillRefCopy.BX - pillRefCopy.AWidth;
+    pillRefCopy.AX = pillRefCopy.BX - 30;
     pillRefCopy.AY = pillRefCopy.BY;
     pillRefCopy.BX = pillRefCopy.BX;
     pillRefCopy.BY = pillRefCopy.BY;
@@ -149,7 +152,9 @@ function SetPillColor(pillToColor){
 }
 
 function pillReset(pillToReset){
-    var pillPositions = startPositions((pillToReset, canvas.width / 2, 0));
+    var x = canvas.width / 2;
+    var y = 0;
+    var pillPositions = startPositions(pillToReset, x, y);
     pillPositions.BX = pillPositions[0];
     pillPositions.BY = pillPositions[1];
     var pillAxis = setAxis(pillPositions);
