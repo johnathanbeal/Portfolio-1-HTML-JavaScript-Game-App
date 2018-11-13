@@ -30,7 +30,7 @@ window.onload = function() {
     var canvasContext = canvas.getContext('2d');
     var pill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 15 );
     var pillWithSetAxis = setAxis(pill)
-    var pillPositions = startPositions(pill, 180, 0, 210, 0);
+    var pillPositions = startPositions(pillWithSetAxis, 180, 0, 210, 0);
     var pillDimensions = setSize(pillPositions, 30, 30);
     pill.AWidth = pillDimensions[0];
     pill.AHeight = pillDimensions[1];
@@ -47,6 +47,7 @@ function newPill(startNewPill){
 }
 
 function moveDown(movePillDown){
+    console.log(movePillDown.AY, movePillDown.BY)
     var stop = false;
     for (var i = 0; i <= movePillDown.Count; i++) {
         if (pillsAX[i] == movePillDown.AX && pillsAY[i] == movePillDown.AY + 30 || pillsBX[i] == movePillDown.BX && pillsBY[i] == movePillDown.BY + 30
@@ -65,7 +66,7 @@ function moveDown(movePillDown){
             else {
                 pillReset(movePillDown);
                 stop = true;
-                Pills.push(pill);
+                Pills.push(movePillDown);
                 return movePillDown;
             }
         }
@@ -85,7 +86,7 @@ function moveDown(movePillDown){
         movePillDown.Count++;
         var resetPill = pillReset(movePillDown);
         stop = false;
-        
+        Pills.push(movePillDown);
         return resetPill;
     }
 }
