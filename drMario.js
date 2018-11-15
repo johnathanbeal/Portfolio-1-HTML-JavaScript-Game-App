@@ -3,7 +3,7 @@ var Pills = [];
 var gameState = {
     position: "0",
     keyPresses: [],
-    currentPill: {}
+    currentPill: { PillInPlay : Pills[Pills.length -1]}
 }
 
 var constants = {
@@ -32,27 +32,25 @@ window.onload = function() {
     console.log("Start Program");
     var canvas = document.getElementById('gameCanvas');
     var canvasContext = canvas.getContext('2d');
-    var pill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 15, "0" );
+    var pill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 5, "0" );
     Pills.push(pill);
     var pillWithSetAxis = setAxis(pill)
     var pillPositions = startPositions(pillWithSetAxis, 180, 0, 210, 0);
     var pillDimensions = setSize(pillPositions, 30, 30);
-    pill.AWidth = pillDimensions[0];
-    pill.AHeight = pillDimensions[1];
-    pill.BWidth = pillDimensions[2];
-    pill.BHeight = pillDimensions[3];
-    var firstPill = createPill(pill);
-    firstPill.Count = 0;
-    setInterval(newPill, framePerSecond, firstPill);            
+    var nthPill = createPill(pillDimensions);
+    nthPill.Count = 0;
+    var i = Pills[Pills.length - 1];
+    setInterval(newPill, framePerSecond, Pills[i]);            
 }
 
-function newPill(startNewPill){      
-    var gamePill = drawGame(startNewPill);
-    var usedPill = moveDown(gamePill);   
+function newPill(){ 
+    var iPills = Pills[Pills.length - 1];
+    var gamePill = drawGame(iPills);
+    moveDown(gamePill);
+    
 }
 
 function moveDown(movePillDown){
-    console.log(movePillDown.AY, movePillDown.BY)
     var stop = false;
     var i;
     for (i = 0; i < Pills.length; i++) {
@@ -69,19 +67,20 @@ function moveDown(movePillDown){
             Pills[Pills.length -1].BX = movePillDown.BX;
             Pills[Pills.length -1].BY = movePillDown.BY;
             if (movePillDown.AY == 0 || movePillDown.BY == 0) {
-                alert('game over')
+                alert('game over');
             }
             else {
-                var restartPill = pillReset();
-                stop = true;               
-                return restartPill;
+                stop = true;                
+                gameState.keyPresses = [];
+                pillReset();
+                return Pills[Pills.length -1];               
             }
         }
     }
 
     if (stop == false && 
-        movePillDown.AY <= 810 - 15 && movePillDown.AY >= 0|| 
-        movePillDown.BY <= 810 - 15 && movePillDown.AY >= 0) {
+        movePillDown.AY < 810 && movePillDown.AY >= 0|| 
+        movePillDown.BY < 810 && movePillDown.AY >= 0) {
         movePillDown.AY = movePillDown.AY + movePillDown.Velocity;
         movePillDown.BY = movePillDown.BY + movePillDown.Velocity;
     }
@@ -93,9 +92,10 @@ function moveDown(movePillDown){
         Pills[Pills.length -1].BColor = movePillDown.BColor;
         Pills[Pills.length -1].BX = movePillDown.BX;
         Pills[Pills.length -1].BY = movePillDown.BY;
-        var rstartPill = pillReset();
-        stop = false;       
-        return restartPill;
+        stop = false;
+        gameState.keyPresses = [];
+        pillReset();        
+        return Pills[Pills.length -1];       
     }
 }
 
@@ -112,7 +112,7 @@ function drawCanvas(pill){
     cCanvasContext.fillStyle = 'CornflowerBlue';
     cCanvasContext.fillRect(0,0, cCanvas.width, cCanvas.height);
     
-    for (var i = 0; i <= Pills.length - 1; i++)
+    for (var i = 0; i < Pills.length - 1; i++)
     {      
         cCanvasContext.fillStyle = Pills[i].AColor;        
         cCanvasContext.fillRect(Pills[i].AX, Pills[i].AY, 30, 30);
@@ -136,7 +136,7 @@ function setSize(pillRefCopy, _width, _height){
     pillRefCopy.AHeight = _height;
     pillRefCopy.BWidth = _width;
     pillRefCopy.BHeight = _height;
-    return [pillRefCopy.AWidth, pillRefCopy.AHeight, pillRefCopy.BWidth, pillRefCopy.BHeight];//refactor OOP
+    return pillRefCopy;
 }
 
 function setAxis(pillRefCopy){
@@ -173,7 +173,7 @@ function pillReset(){
     return pillWithColor;
 }
 
-function moveLeft(pill = [Pills.length - 1]){
+function moveLeft(pill = Pills[Pills.length - 1]){
     if (pill.AX > 0)
     {
         pill.AX -= 30;
@@ -181,7 +181,7 @@ function moveLeft(pill = [Pills.length - 1]){
     }
 }
 
-function moveRight(pill = [Pills.length - 1]){
+function moveRight(pill = Pills[Pills.length - 1]){
     if (pill.BX <= 360 && pill.AX <= 360)
     {
         console.log(pill.AX);
@@ -259,4 +259,6 @@ function colorPill(pill)
 
     return pill;
 }
+
+
 
