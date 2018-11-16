@@ -1,4 +1,5 @@
 var Pills = [];
+var gameOn;
 
 var gameState = {
     position: "0",
@@ -40,20 +41,22 @@ window.onload = function() {
     var nthPill = createPill(pillDimensions);
     nthPill.Count = 0;
     var i = Pills[Pills.length - 1];
-    setInterval(newPill, framePerSecond, Pills[i]);            
+    gameOn = setInterval(newPill, framePerSecond, Pills[i]);            
 }
 
 function newPill(){ 
     var iPills = Pills[Pills.length - 1];
     var gamePill = drawGame(iPills);
     moveDown(gamePill);
+    moveLeft();
+    moveRight();
     
 }
 
 function moveDown(movePillDown){
     var stop = false;
     var i;
-    for (i = 0; i < Pills.length; i++) {
+    for (i = 0; i < Pills.length -1; i++) {
         var test = Pills[0].A_X;
         var test1 = Pills[0].AX;
         if (Pills[i].AX == movePillDown.AX && Pills[i].AY == movePillDown.AY + 30 || 
@@ -68,6 +71,8 @@ function moveDown(movePillDown){
             Pills[Pills.length -1].BY = movePillDown.BY;
             if (movePillDown.AY == 0 || movePillDown.BY == 0) {
                 alert('game over');
+                gameState.gameOn = false;
+                clearInterval(gameOn);
             }
             else {
                 stop = true;                
@@ -173,20 +178,19 @@ function pillReset(){
     return pillWithColor;
 }
 
-function moveLeft(pill = Pills[Pills.length - 1]){
-    if (pill.AX > 0)
+function moveLeft(){
+    if (Pills[Pills.length - 1].AX > 0)
     {
-        pill.AX -= 30;
-        pill.BX -= 30;
+        Pills[Pills.length - 1] -= 30;
+        Pills[Pills.length - 1] -= 30;
     }
 }
 
-function moveRight(pill = Pills[Pills.length - 1]){
-    if (pill.BX <= 360 && pill.AX <= 360)
+function moveRight(){
+    if (Pills[Pills.length - 1].BX <= 360 && pill.AX <= 360)
     {
-        console.log(pill.AX);
-        pill.AX += 30;
-        pill.BX += 30;
+        Pills[Pills.length - 1] += 30;
+        Pills[Pills.length - 1] += 30;
     }
 }
 
@@ -225,7 +229,7 @@ function rotatePillClockwise()
         Pills[Pills.length - 1].BY = previousAY;
         Pills[Pills.length - 1].BX = previousBX;
         Pills[Pills.length - 1].Position = "180";
-    //}
+    
         break;
     case "180":
         Pills[Pills.length - 1].AY = previousAY + 30;

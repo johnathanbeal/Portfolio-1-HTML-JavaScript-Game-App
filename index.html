@@ -8,8 +8,8 @@
 <canvas id="gameCanvas" width="420" height="840"></canvas>
 <img src="DrWario.png" alt="Dr. Wario">
 <br>
-<button onclick="gameState.keyPresses.push(constants.LEFT_KEY_PRESS)">Move Left</button>
-<button onclick="gameState.keyPresses.push(constants.RIGHT_KEY_PRESS)">Move Right</button>
+<button onclick="moveLeft()">Move Left</button>
+<button onclick="moveRight()">Move Right</button>
 <button onclick="setTimeout(rotatePillClockwise(), 1000)">Rotate</button>
 <button onclick="pillReset()">Reset</button>
 <button onclick="moveFaster()">Faster</button>
