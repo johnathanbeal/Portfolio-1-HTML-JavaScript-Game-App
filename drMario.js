@@ -48,9 +48,6 @@ function newPill(){
     var iPills = Pills[Pills.length - 1];
     var gamePill = drawGame(iPills);
     moveDown(gamePill);
-    moveLeft();
-    moveRight();
-    
 }
 
 function moveDown(movePillDown){
@@ -178,19 +175,20 @@ function pillReset(){
     return pillWithColor;
 }
 
-function moveLeft(){
-    if (Pills[Pills.length - 1].AX > 0)
+function moveLeft(pill = [Pills.length - 1]){
+    if (pill.AX > 0)
     {
-        Pills[Pills.length - 1] -= 30;
-        Pills[Pills.length - 1] -= 30;
+        pill.AX -= 30;
+        pill.BX -= 30;
     }
 }
 
-function moveRight(){
-    if (Pills[Pills.length - 1].BX <= 360 && pill.AX <= 360)
+function moveRight(pill = [Pills.length - 1]){
+    if (pill.BX <= 360 && pill.AX <= 360)
     {
-        Pills[Pills.length - 1] += 30;
-        Pills[Pills.length - 1] += 30;
+        console.log(pill.AX);
+        pill.AX += 30;
+        pill.BX += 30;
     }
 }
 
