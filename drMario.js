@@ -26,6 +26,8 @@ function Pill(A_Width, A_Height, A_Color, A_X, A_Y, B_Width, B_Height, B_Color, 
     this.BY = B_Y,
     this.Velocity = velocity,
     this.Position = position
+    this.MoveLeft = 0,
+    this.MoveRight = 0
 }
 
 window.onload = function() {
@@ -47,7 +49,9 @@ window.onload = function() {
 function newPill(){ 
     var iPills = Pills[Pills.length - 1];
     var gamePill = drawGame(iPills);
-    moveDown(gamePill);
+    var moveDownPill = moveDown(gamePill);
+    moveLeft(moveDownPill)
+    moveRight(moveDownPill)
 }
 
 function moveDown(movePillDown){
@@ -85,6 +89,7 @@ function moveDown(movePillDown){
         movePillDown.BY < 810 && movePillDown.AY >= 0) {
         movePillDown.AY = movePillDown.AY + movePillDown.Velocity;
         movePillDown.BY = movePillDown.BY + movePillDown.Velocity;
+        return Pills[Pills.length -1];
     }
     
     else {
@@ -163,7 +168,7 @@ function SetPillColor(pillToColor){
 }
 
 function pillReset(){
-    var nPill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 15, "0" );
+    var nPill = new Pill(30, 30, "White", 0, 0, 30, 30,"White", 0, 0, 5, "0" );
     Pills.push(nPill);
     var x = 180;
     var y = 0;
@@ -175,20 +180,30 @@ function pillReset(){
     return pillWithColor;
 }
 
-function moveLeft(pill = [Pills.length - 1]){
-    if (pill.AX > 0)
+function moveLeft(moveLeftCopyOfPill){
+    
+    while (moveLeftCopyOfPill.MoveLeft > 0 && moveLeftCopyOfPill.AX > 0) {
+            moveLeftCopyOfPill.AX -= 30;
+            moveLeftCopyOfPill.BX -= 30;
+            moveLeftCopyOfPill.MoveLeft--;
+    }   
+    if (moveLeftCopyOfPill.AX > 0 == 0)
     {
-        pill.AX -= 30;
-        pill.BX -= 30;
+        moveLeftCopyOfPill.MoveLeft = 0;
     }
+
 }
 
-function moveRight(pill = [Pills.length - 1]){
-    if (pill.BX <= 360 && pill.AX <= 360)
+function moveRight(moveRightCopyOfPill){
+    
+    while (moveRightCopyOfPill.MoveRight > 0 & moveRightCopyOfPill.BX <= 360 && moveRightCopyOfPill.AX <= 360) {
+            moveRightCopyOfPill.AX += 30;
+            moveRightCopyOfPill.BX += 30;
+            moveRightCopyOfPill.MoveRight--;
+    }
+    if (moveRightCopyOfPill.AX > 0 == 360 || moveRightCopyOfPill.BX == 360)
     {
-        console.log(pill.AX);
-        pill.AX += 30;
-        pill.BX += 30;
+        moveRightCopyOfPill.MoveRigh = 0;
     }
 }
 
