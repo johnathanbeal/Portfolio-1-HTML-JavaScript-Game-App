@@ -2,6 +2,11 @@ var Pills = [];
 var gameOn;
 
 var gameState = {
+    board: function storeCoordinates(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color;
+    },
     position: "0",
     keyPresses: [],
     currentPill: { PillInPlay : Pills[Pills.length -1]}
@@ -52,6 +57,7 @@ function newPill(){
     var moveDownPill = moveDown(gamePill);
     moveLeft(moveDownPill)
     moveRight(moveDownPill)
+    mapBoard();
 }
 
 function moveDown(movePillDown){
@@ -276,6 +282,42 @@ function colorPill(pill)
 
     return pill;
 }
+///I think I've taken a wrong turn in this approach
+function mapBoard()
+{
+    for (var x = 0; x < 420; x+=30 )
+    {
+        for (var y = 0; y < 840; y+=30)
+        {
+            for (var i = 0; i < Pills.length; i++)
+            {
+                Pills.forEach(function(item, index, array){
+                    if (x == item.AX && y == item.AY)
+                    {
+                        gameState.board(item.AX, item.AY, item.BColor);
+                    }
+                    if (x == item.BX && y == item.BY)
+                    {
+                        gameState.board(item.BY, item.BY, item.BColor);
+                    } 
+                    else (x != item.AX && y != item.AY || x != item.BX && y != item.BY)
+                    {
+                        gameState.board(x, y, 'CornflowerBlue');
+                    }              
+                });               
+            }          
+        }
+    }    
+}
 
-
-
+function connectFour()
+{
+    for (var x = 0; x < 420; x+=30 )
+    {
+        for (var y = 0; y < 840; y+=30)
+        {
+           // if (gameState.board.X
+        }
+    }    
+}
+///I think I've taken a wrong turn in this approach
