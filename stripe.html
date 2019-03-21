@@ -1,0 +1,57 @@
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript" src="~/Scripts/payment-validations.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.payment.js"></script>
+
+<script type="text/javascript"></script>
+<script>
+const stripe = Stripe('pk_test_1cc7RjwBL9ccFUSVhp7Pg7Ej');
+Stripe.setPublishableKey(stripe);
+
+$(function ($) {
+    $("#pay-button").click(function (e) {
+        $("#payment-form-container").toggleClass("hidden");
+    });
+
+$('#payment-form').submit(function (e) {
+    e.preventDefault();
+    var $form = $(this);
+
+    $form.find('button').prop('disabled', true);
+
+    expiration = $('.cc-exp').payment('cardExpiryVal');
+
+    Stripe.card.createToken({
+        number: $('.cc-number').val(),
+        cvc: $('.cc-cvc').val(),
+        exp_month: (expiration.month || 0),
+        exp_year: (expiration.year || 0)
+    }, stripeResponseHandler);
+    
+});
+
+stripeResponseHandler = function (status, response) {
+    var $form = $('#payment-form');
+
+    if (response.error) {
+        $paymentErrors = $form.find('.payment-errors');
+        $paymentErrors.text(response.error.message);
+        $paymentErrors.toggle($paymentErrors.text.length > 0);
+        
+        $form.find('button'.prop('disabled', false));
+    } else {
+        var token = response.id;
+        $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+        $form.get(0).submit();
+    }
+};
+
+// <!-- <script src="https://checkout.stripe.com/checkout.js"
+//   class="stripe-button"
+//   data-key="2000"
+//   data-name="Cool TShirt"
+//   data-description='Small Business Made TShirts'
+//   data-image="/Content/images/main-book.png"
+//   data-label="Buy TShirt"
+//   data-email="johnathanbeal@gmail.com"
+// </script> -->
+ 
